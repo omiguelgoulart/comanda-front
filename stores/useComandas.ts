@@ -70,8 +70,8 @@ export const useComandas = create<ComandaStore>((set, get) => ({
 
   buscarComanda: async (id: number) => {
     try {
-      const data = await apiFetch<Comanda>(`/comandas/${id}`)
-      set({ comandaSelecionada: data })
+      const comanda = await apiFetch<Comanda>(`/comandas/${id}`)
+      set({ comandaSelecionada: comanda })
     } catch (err) {
       console.error("[buscarComanda]", err)
       set({ comandaSelecionada: null })

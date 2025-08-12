@@ -1,22 +1,40 @@
 'use client';
 
-import { useEffect } from "react";
-
+import { useEffect, useMemo, useState } from "react";
 import { useComandas } from "@/stores/useComandas";
 import { BotaoNovaComanda } from "./components/dashboard/BotaoNovaComanda";
 import { DashboardResumo } from "./components/dashboard/DashboardResumo";
 import { ListaComandas } from "./components/dashboard/ListaComandas";
+import FiltroComandasDia from "./components/dashboard/FiltroComandasPorData";
+
+function dateOnlyYYYYMMDD(input: string | Date) {
+  const d = input instanceof Date ? input : new Date(input);
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${m}-${day}`;
+}
 
 export default function DashboardPage() {
-
   const { comandas, carregarComandas } = useComandas();
+  const [diaSelecionado, setDiaSelecionado] = useState<string>("");
+
   useEffect(() => {
-    const fetchComandas = async () => {
-      const data = carregarComandas();
-      return data;
-    }
-    fetchComandas();
+    carregarComandas();
   }, [carregarComandas]);
+
+  interface Comanda {
+    data: string | Date;
+    // adicione outros campos conforme necessário
+    // Exemplo de campos adicionais:
+    id?: number;
+    nomeCliente?: string;
+    valorTotal?: number;
+  }
+
+  const comandasFiltradas = useMemo(() => {
+    if (!diaSelecionado) return comandas;
+    return comandas.filter((c: Comanda) => dateOnlyYYYYMMDD(c.data) === diaSelecionado);
+  }, [comandas, diaSelecionado]);
 
   return (
     <main className="p-4 max-w-7xl mx-auto space-y-6">
@@ -28,10 +46,14 @@ export default function DashboardPage() {
         <BotaoNovaComanda />
       </div>
 
-      <DashboardResumo />
-      <ListaComandas
-        comandas={comandas}
+      <FiltroComandasDia
+        /** pode usar tanto "value" quanto "valor" */
+        value={diaSelecionado}
+        onChange={setDiaSelecionado}
       />
+
+      <DashboardResumo />
+      <ListaComandas comandas={comandasFiltradas} />
     </main>
-  )
+  );
 }
