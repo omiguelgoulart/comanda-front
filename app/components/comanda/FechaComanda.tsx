@@ -13,7 +13,7 @@ export function FechaComanda({ numeroComanda, onFechar }: FechaComandaProps) {
   const comandaAtiva = async () => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/comandas/${numeroComanda}`,
+        `${process.env.NEXT_PUBLIC_API_ROUTE}/comandas/${numeroComanda}`,
         { method: "PATCH" }
       );
 
