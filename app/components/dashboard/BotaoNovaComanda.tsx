@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { useComandas } from "@/stores/useComandas"
-import type { NovaComandaInput } from "c:/ads/comandas/types/comanda"
+import { NovaComandaInput } from "@/types/comanda"
 
 export function BotaoNovaComanda({ small = false }: { small?: boolean }) {
   const router = useRouter()
